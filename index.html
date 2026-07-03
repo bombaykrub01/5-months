@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Happy 5 Months 💕</title>
+<meta name="description" content="An interactive love game for our 5-month anniversary." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Playfair+Display:ital,wght@0,500;1,500&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class=\"bg-gradient\"></div>
+<canvas id="particleCanvas"></canvas>
+<div id="floatingHearts" class="floating-layer"></div>
+<div id="butterflies" class="floating-layer"></div>
+<div id="mouseTrail"></div>
+<div id="cursorHeart">❤</div>
+<canvas id="fxCanvas"></canvas>
+
+<div id="musicPlayer" class="glass music-player hidden">
+  <button id="musicToggle" class="ripple">▶</button>
+  <button id="muteToggle" class="ripple">🔊</button>
+  <span class="music-title">Our Song 🎵</span>
+  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.6" />
+  <audio id="bgMusic" src="assets/music/song.mp3" loop></audio>
+</div>
+
+<div class="door door-left"></div>
+<div class="door door-right"></div>
+
+<div id="toast" class="hidden"></div>
+
+<section id="passwordScreen" class="screen active">
+  <div class="glass card password-card">
+    <div class="lock-icon">🔒</div>
+    <h2 class="cursive title-big">Enter Our Secret Date</h2>
+    <p class="subtitle">ระบุวันครบรอบของเราเป็นตัวเลข (DDMMYYYY)</p>
+    <div class="pin-inputs" id="pinInputs">
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
+    </div>
+    <button id="unlockBtn" class="btn-primary ripple big">Unlock Love ❤️</button>
+    <div id="pwMessage" class="pw-message"></div>
+    <p class="hint">ใบ้ให้: วันที่เราขอเป็นแฟนกันในอนาคตอันใกล้? 🤭</p>
+  </div>
+</section>
+
+<section id="homeScreen" class="screen">
+  <div class="home-inner">
+    <div id="secretLogo" class="logo">💖</div>
+    <h1 class="title-huge cursive">Happy 5 Months</h1>
+    <div id="daysBadge" class="glass counter-badge">Day 0 of us 💗</div>
+    <p class="tagline">ยินดีต้อนรับเข้าสู่มินิเว็บเกมฉลองครบรอบ 5 เดือนของเรานะเบบี๋ ทุกๆ ด่านมีความทรงจำซ่อนอยู่ หวังว่าจะชอบนะ!</p>
+    <button id="startGameBtn" class="btn-primary ripple big">กดเพื่อเริ่มเล่นเกม 🎮</button>
+    
+    <div class="level-dots">
+      <div class="dot" data-level="1"></div>
+      <div class="dot" data-level="2"></div>
+      <div class="dot" data-level="3"></div>
+    </div>
+  </div>
+  <div id="cornerHeart" style="position:fixed;bottom:20px;right:20px;font-size:32px;cursor:pointer;user-select:none;z-index:100;">💝</div>
+</section>
+
+<section id="level1Screen" class="screen">
+  <div class="glass hud">
+    <div>Score: <span id="l1Score">0</span>/20</div>
+    <div>Combo: <span id="l1Combo">0</span></div>
+    <div>HeartsLeft: <span id="l1Lives">3</span> ❤️</div>
+    <div class="progress"><div id="l1Progress"></div></div>
+  </div>
+  <div id="l1Area" class="play-area"></div>
+  
+  <div id="l1Overlay" class="overlay">
+    <div class="glass card">
+      <h2>ด่านที่ 1: ตะกร้าเก็บรัก 🧺</h2>
+      <p>ขยับตะกร้ารองรับหัวใจสีชมพู 💗 และหัวใจทอง 💛 ให้ได้ครบ 20 แต้ม! แต่ระวังหัวใจที่แตกสลาย 💔 ด้วยนะเบบี๋!</p>
+      <button id="l1Start" class="btn-primary ripple">เริ่มเกมเลเวล 1</button>
+    </div>
+  </div>
+</section>
+
+<section id="level2Screen" class="screen">
+  <div class="glass card quiz-wrap">
+    <div class="quiz-header center">
+      <h2 class="title-big cursive">ด่านที่ 2: แฟนพันธุ์แท้ของเรา 👑</h2>
+      <p class="subtitle">ตอบคำถามทดสอบความใส่ใจกันหน่อยซิ!</p>
+    </div>
+    <div id="quizBody"></div>
+    <div id="quizHint" class="quiz-hint center"></div>
+  </div>
+</section>
+
+<section id="finalScreen" class="screen">
+  <div class="glass card puzzle-wrap">
+    <h2 class="title-big cursive">ด่านที่ 3: ต่อจิกซอว์ความทรงจำ 🧩</h2>
+    <p class="subtitle">ลากชิ้นส่วนทางด้านล่างขึ้นไปเรียงบนกระดานด้านบนให้ถูกต้องเพื่อเปิดกล่องของขวัญลึกลับ</p>
+    
+    <div class="puzzle-layout">
+      <div>
+        <p style="margin-bottom:6px; font-weight:600; opacity:0.8;">กระดาน (วางที่นี่)</p>
+        <div id="puzzleBoard" class="puzzle-board"></div>
+      </div>
+      <div>
+        <p style="margin-bottom:6px; font-weight:600; opacity:0.8;">กล่องชิ้นส่วน</p>
+        <div id="puzzleTray" class="puzzle-tray"></div>
+      </div>
+    </div>
+
+    <div id="giftBoxSection" class="hidden">
+      <div id="giftContainer" class="gift-container">
+        <div class="gift-bow">💝</div>
+        <div class="gift-lid"></div>
+        <div class="gift-box"></div>
+      </div>
+      <p class="cursive" style="color:var(--pink-500); font-size:1.4rem; animation:floaty 2s infinite;">คุณได้รับกล่องของขวัญ! คลิกเปิดได้เลย 🎁</p>
+    </div>
+  </div>
+</section>
+
+<section id="letterScreen" class="screen">
+  <div class="envelope-wrap">
+    <div class="envelope">
+      <div class="letter">
+        <div class="letter-inner">
+          <h3>ถึง ต้าวเบุบี๋สุดที่รัก 💌</h3>
+          <p>สุขสันต์วันครบรอบ 5 เดือนนะค๊าาา! ขอบคุณสำหรับทุกๆ รอยยิ้ม ความสุข และความอบอุ่นที่มอบให้กันมาตลอดนะ</p>
+          <p>ถึงแม้ว่าช่วงเวลาที่ผ่านมามันอาจจะมีงอนกันบ้าง สองจิตสองใจกันบ้าง แต่ทุกครั้งเราก็ก้าวผ่านมันมาได้ และรักกันมากขึ้นกว่าเดิมเสมอเลยนะ</p>
+          <p>เค้าอยากบอกว่าเค้ามีความสุขมากๆ ที่มีเธออยู่เคียงข้างในทุกๆ วัน และจะคอยอยู่เป็นความสุข เป็นเซฟโซนให้เธอแบบนี้ไปนานๆ เลยนะ อยู่เติบโตและจับมือกันไปจนถึงวันครบรอบปีถัดๆ ไปเลยนะค๊าบ!</p>
+          <p style="text-align:right; font-weight:600; margin-top:15px; color:var(--pink-500);" class="cursive">รักเธอที่สุดในโลกเล๊ยยย ❤️<br>จากต้าวความรักของคุณ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="letterAction" class="center hidden" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); z-index:15;">
+    <button id="readLetterBtn" class="btn-primary ripple big">อ่านจบแล้ว (ไปต่อหน้าสุดท้าย) ✨</button>
+  </div>
+  <div style="position:absolute; top:30px; left:50%; transform:translateX(-50%); z-index:5;">
+    <button id="openEnvelopeBtn" class="btn-secondary ripple">จิ้มเปิดซองจดหมาย 💌</button>
+  </div>
+</section>
+
+<section id="countdownScreen" class="screen">
+  <div class="glass card center" style="width:min(540px, 92vw);">
+    <h2 class="title-big cursive">Road to 1 Year Anniversary 📆</h2>
+    <p class="subtitle">เวลาที่จะก้าวไปสู่การครบรอบ 1 ปีของเรา</p>
+    <div class="countdown">
+      <div><span id="cdDays">0</span><small>days</small></div>
+      <div><span id="cdHours">0</span><small>hours</small></div>
+      <div><span id="cdMin">0</span><small>min</small></div>
+      <div><span id="cdSec">0</span><small>sec</small></div>
+    </div>
+    <p class="tagline">…and infinite more after that.</p>
+    <button id="restartBtn" class="btn-secondary ripple">Play again 🔁</button>
+  </div>
+</section>
+
+<div id="secretPage" class="secret-page hidden">
+  <div class="glass card center">
+    <div style="font-size:64px">💗</div>
+    <h2 class="cursive" style="font-size:2.4rem">I love you too</h2>
+    <p>รักเบบี๋มากที่สุดในโลก 🌏</p>
+    <button class="btn-primary ripple" id="secretClose">ปิด</button>
+  </div>
+</div>
+
+<div id="jumpscare" class="jumpscare hidden">
+  <div class="jumpscare-cat">
+    <div class="cat-face">
+      <div class="cat-ear left"></div>
+      <div class="cat-ear right"></div>
+      <div class="cat-eye left">•</div>
+      <div class="cat-eye right">•</div>
+      <div class="cat-nose">▾</div>
+      <div class="cat-mouth">ω</div>
+      <div class="cat-whisker w1"></div>
+      <div class="cat-whisker w2"></div>
+      <div class="cat-whisker w3"></div>
+      <div class="cat-whisker w4"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
