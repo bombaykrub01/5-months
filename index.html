@@ -2,9 +2,11 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Happy 5 Months 💕</title>
 <meta name="description" content="An interactive love game for our 5-month anniversary." />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Playfair+Display:ital,wght@0,500;1,500&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -12,7 +14,7 @@
 </head>
 <body>
 
-<div class=\"bg-gradient\"></div>
+<div class="bg-gradient"></div>
 <canvas id="particleCanvas"></canvas>
 <div id="floatingHearts" class="floating-layer"></div>
 <div id="butterflies" class="floating-layer"></div>
@@ -23,134 +25,116 @@
 <div id="musicPlayer" class="glass music-player hidden">
   <button id="musicToggle" class="ripple">▶</button>
   <button id="muteToggle" class="ripple">🔊</button>
-  <span class="music-title">Our Song 🎵</span>
-  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.6" />
-  <audio id="bgMusic" src="assets/music/song.mp3" loop></audio>
+  <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.5" aria-label="Volume Slider" />
+  <audio id="bgMusic" src="song.mp3" loop prefetch="auto" playsinline></audio>
 </div>
 
-<div class="door door-left"></div>
-<div class="door door-right"></div>
+<div id="gameProgressHUD" class="hud-layer hidden">
+  <div class="glass map-badge">
+    <span class="hud-title">Our Journey ✨</span>
+    <div class="dots-container">
+      <div class="dot" data-level="1" title="Level 1: Heart Catch">1</div>
+      <div class="dot" data-level="2" title="Level 2: Jigsaw Puzzle">2</div>
+      <div class="dot" data-level="3" title="Level 3: Gift Box">3</div>
+    </div>
+  </div>
+</div>
 
-<div id="toast" class="hidden"></div>
+<div id="toast" class="toast hidden"></div>
 
 <section id="passwordScreen" class="screen active">
-  <div class="glass card password-card">
-    <div class="lock-icon">🔒</div>
-    <h2 class="cursive title-big">Enter Our Secret Date</h2>
-    <p class="subtitle">ระบุวันครบรอบของเราเป็นตัวเลข (DDMMYYYY)</p>
-    <div class="pin-inputs" id="pinInputs">
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-      <input type="text" pattern="[0-9]*" inputmode="numeric" class="pin" maxlength="1" />
-    </div>
-    <button id="unlockBtn" class="btn-primary ripple big">Unlock Love ❤️</button>
-    <div id="pwMessage" class="pw-message"></div>
-    <p class="hint">ใบ้ให้: วันที่เราขอเป็นแฟนกัน? 🤭</p>
-  </div>
-</section>
-
-<section id="homeScreen" class="screen">
-  <div class="home-inner">
-    <div id="secretLogo" class="logo">💖</div>
-    <h1 class="title-huge cursive">Happy 5 Months</h1>
-    <div id="daysBadge" class="glass counter-badge">Day 0 of us 💗</div>
-    <p class="tagline">ยินดีต้อนรับเข้าสู่มินิเว็บเกมฉลองครบรอบ 5 เดือนของเรานะเบบี๋ ทุกๆ ด่านมีความทรงจำซ่อนอยู่ หวังว่าจะชอบนะ!</p>
-    <button id="startGameBtn" class="btn-primary ripple big">กดเพื่อเริ่มเล่นเกม 🎮</button>
+  <div class="glass card center intro-card">
+    <div class="interactive-heart-logo ripple" id="heartLogo" title="Click me 10 times!">💖</div>
+    <h1 class="title cursive">For My Angel 🌸</h1>
+    <p class="subtitle">กรุณาป้อนรหัสผ่านวันครบรอบของเราเพื่อเข้าสู่ห้วงเวลาพิเศษ</p>
     
-    <div class="level-dots">
-      <div class="dot" data-level="1"></div>
-      <div class="dot" data-level="2"></div>
-      <div class="dot" data-level="3"></div>
+    <div class="input-container">
+      <input type="password" id="passInput" inputmode="numeric" pattern="[0-8]*" maxlength="15" placeholder="DDMMYYYY / Secret..." autocomplete="off" />
+      <span class="input-focus-line"></span>
     </div>
-  </div>
-  <div id="cornerHeart" style="position:fixed;bottom:20px;right:20px;font-size:32px;cursor:pointer;user-select:none;z-index:100;">💝</div>
-</section>
-
-<section id="level1Screen" class="screen">
-  <div class="glass hud">
-    <div>Score: <span id="l1Score">0</span>/20</div>
-    <div>Combo: <span id="l1Combo">0</span></div>
-    <div>HeartsLeft: <span id="l1Lives">3</span> ❤️</div>
-    <div class="progress"><div id="l1Progress"></div></div>
-  </div>
-  <div id="l1Area" class="play-area"></div>
-  
-  <div id="l1Overlay" class="overlay">
-    <div class="glass card">
-      <h2>ด่านที่ 1: ตะกร้าเก็บรัก 🧺</h2>
-      <p>ขยับตะกร้ารองรับหัวใจสีชมพู 💗 และหัวใจทอง 💛 ให้ได้ครบ 20 แต้ม! แต่ระวังหัวใจที่แตกสลาย 💔 ด้วยนะเบบี๋!</p>
-      <button id="l1Start" class="btn-primary ripple">เริ่มเกมเลเวล 1</button>
-    </div>
-  </div>
-</section>
-
-<section id="level2Screen" class="screen">
-  <div class="glass card quiz-wrap">
-    <div class="quiz-header center">
-      <h2 class="title-big cursive">ด่านที่ 2: แฟนพันธุ์แท้ของเรา 👑</h2>
-      <p class="subtitle">ตอบคำถามทดสอบความใส่ใจกันหน่อยซิ!</p>
-    </div>
-    <div id="quizBody"></div>
-    <div id="quizHint" class="quiz-hint center"></div>
-  </div>
-</section>
-
-<section id="finalScreen" class="screen">
-  <div class="glass card puzzle-wrap">
-    <h2 class="title-big cursive">ด่านที่ 3: ต่อจิกซอว์ความทรงจำ 🧩</h2>
-    <p class="subtitle">ลากชิ้นส่วนทางด้านล่างขึ้นไปเรียงบนกระดานด้านบนให้ถูกต้องเพื่อเปิดกล่องของขวัญลึกลับ</p>
     
-    <div class="puzzle-layout">
-      <div>
-        <p style="margin-bottom:6px; font-weight:600; opacity:0.8;">กระดาน (วางที่นี่)</p>
-        <div id="puzzleBoard" class="puzzle-board"></div>
-      </div>
-      <div>
-        <p style="margin-bottom:6px; font-weight:600; opacity:0.8;">กล่องชิ้นส่วน</p>
-        <div id="puzzleTray" class="puzzle-tray"></div>
-      </div>
-    </div>
+    <button id="unlockBtn" class="btn-primary ripple">Unlock Our Memories ✨</button>
+  </div>
+</section>
 
-    <div id="giftBoxSection" class="hidden">
-      <div id="giftContainer" class="gift-container">
-        <div class="gift-bow">💝</div>
+<section id="homeScreen" class="screen hidden">
+  <div class="glass card center main-card">
+    <h1 class="title-big neon-glow text-pop">Happy 5 Months</h1>
+    <p class="subtitle-italic">"Every moment with you is my favorite memory."</p>
+    <div class="heart-container-glow">
+      <div class="pulse-heart" id="clickableHeart" title="Click me 5 times!">❤️</div>
+    </div>
+    <button id="startGameBtn" class="btn-primary btn-large ripple">Start Our Adventure 🚀</button>
+  </div>
+</section>
+
+<section id="level1Screen" class="screen hidden">
+  <div class="game-container">
+    <div class="glass score-hud">
+      <div>Score: <span id="l1Score" class="stat-val">0</span> / 20</div>
+      <div>Combo: <span id="l1Combo" class="stat-val">0x</span></div>
+    </div>
+    <div class="progress-bar-container glass">
+      <div id="l1Bar" class="progress-fill"></div>
+    </div>
+    <canvas id="level1Canvas"></canvas>
+    <div id="l1Instructions" class="game-hint">เลื่อนเมาส์หรือใช้นิ้วลากเพื่อเก็บหัวใจสีชมพูและสีทอง หลบหัวใจสีดำแตกสลาย!</div>
+  </div>
+</section>
+
+<section id="level2Screen" class="screen hidden">
+  <div class="game-container vertical-flex">
+    <div class="glass score-hud min-hud">
+      <div>Level 2: Jigsaw Puzzle 💕</div>
+      <div style="font-size:0.85rem; opacity:0.8; margin-top:4px;">ต่อจิ๊กซอว์รูปคู่ของเราให้เสร็จสิ้น โดยการลากชิ้นส่วนไปวางในช่องที่ถูกต้อง</div>
+    </div>
+    <div class="puzzle-wrapper">
+      <canvas id="puzzleCanvas"></canvas>
+    </div>
+  </div>
+</section>
+
+<section id="level3Screen" class="screen hidden">
+  <div class="game-container center-flex">
+    <div class="glass score-hud min-hud top-hud">
+      <div>Level 3: Open Your Gift 🎁</div>
+      <div class="tap-hint-text">รัวนิ้วหรือคลิกกล่องของขวัญซ้ำๆ เพื่อเปิดกล่องแห่งความรัก!</div>
+    </div>
+    
+    <div class="gift-box-wrapper" id="giftBoxContainer">
+      <div class="progress-circle-wrap">
+        <svg class="progress-ring" width="240" height="240">
+          <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.3)" stroke-width="8" fill="transparent" r="110" cx="120" cy="120"/>
+          <circle id="giftProgressCircle" class="progress-ring__circle" stroke="var(--pink-500)" stroke-width="8" fill="transparent" r="110" cx="120" cy="120"/>
+        </svg>
+      </div>
+      <div id="giftBox" class="gift-box ripple">
         <div class="gift-lid"></div>
-        <div class="gift-box"></div>
+        <div class="gift-ribbon-v"></div>
+        <div class="gift-ribbon-h"></div>
+        <div class="gift-body"></div>
+        <div class="gift-bow">🎀</div>
       </div>
-      <p class="cursive" style="color:var(--pink-500); font-size:1.4rem; animation:floaty 2s infinite;">คุณได้รับกล่องของขวัญ! คลิกเปิดได้เลย 🎁</p>
     </div>
   </div>
 </section>
 
-<section id="letterScreen" class="screen">
-  <div class="envelope-wrap">
-    <div class="envelope">
-      <div class="letter">
-        <div class="letter-inner">
-          <h3>ถึง ต้าวเบุบี๋สุดที่รัก 💌</h3>
-          <p>สุขสันต์วันครบรอบ 5 เดือนนะค๊าาา! ขอบคุณสำหรับทุกๆ รอยยิ้ม ความสุข และความอบอุ่นที่มอบให้กันมาตลอดนะ</p>
-          <p>ถึงแม้ว่าช่วงเวลาที่ผ่านมามันอาจจะมีงอนกันบ้าง สองจิตสองใจกันบ้าง แต่ทุกครั้งเราก็ก้าวผ่านมันมาได้ และรักกันมากขึ้นกว่าเดิมเสมอเลยนะ</p>
-          <p>เค้าอยากบอกว่าเค้ามีความสุขมากๆ ที่มีเธออยู่เคียงข้างในทุกๆ วัน และจะคอยอยู่เป็นความสุข เป็นเซฟโซนให้เธอแบบนี้ไปนานๆ เลยนะ อยู่เติบโตและจับมือกันไปจนถึงวันครบรอบปีถัดๆ ไปเลยนะค๊าบ!</p>
-          <p style="text-align:right; font-weight:600; margin-top:15px; color:var(--pink-500);" class="cursive">รักเธอที่สุดในโลกเล๊ยยย ❤️<br>จากต้าวความรักของคุณ</p>
-        </div>
+<section id="letterScreen" class="screen hidden">
+  <div class="envelope-wrapper" id="envelopeWrapper">
+    <div class="envelope" id="mainEnvelope">
+      <div class="envelope-flap"></div>
+      <div class="envelope-pocket"></div>
+      <div class="letter-paper" id="letterPaper">
+        <h2 class="letter-title cursive">Dear Baby Angel Meena 💖</h2>
+        <div class="letter-body typewriter-text" id="typedLetterText"></div>
       </div>
     </div>
-  </div>
-  <div id="letterAction" class="center hidden" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); z-index:15;">
-    <button id="readLetterBtn" class="btn-primary ripple big">อ่านจบแล้ว (ไปต่อหน้าสุดท้าย) ✨</button>
-  </div>
-  <div style="position:absolute; top:30px; left:50%; transform:translateX(-50%); z-index:5;">
-    <button id="openEnvelopeBtn" class="btn-secondary ripple">จิ้มเปิดซองจดหมาย 💌</button>
+    <div class="envelope-hint" id="envHint">Click the envelope to read your letter 💌</div>
   </div>
 </section>
 
-<section id="countdownScreen" class="screen">
-  <div class="glass card center" style="width:min(540px, 92vw);">
+<section id="finalScreen" class="screen hidden">
+  <div class="glass card center finale-card" style="width:min(540px, 92vw);">
     <h2 class="title-big cursive">Road to 1 Year Anniversary 📆</h2>
     <p class="subtitle">เวลาที่จะก้าวไปสู่การครบรอบ 1 ปีของเรา</p>
     <div class="countdown">
@@ -167,9 +151,9 @@
 <div id="secretPage" class="secret-page hidden">
   <div class="glass card center">
     <div style="font-size:64px">💗</div>
-    <h2 class="cursive" style="font-size:2.4rem">I love you too</h2>
+    <h2 class="cursive" style=\"font-size:2.4rem\">I love you too</h2>
     <p>รักเบบี๋มากที่สุดในโลก 🌏</p>
-    <button class="btn-primary ripple" id="secretClose">ปิด</button>
+    <button class=\"btn-primary ripple\" id=\"secretClose\">ปิด</button>
   </div>
 </div>
 
@@ -178,15 +162,16 @@
     <div class="cat-face">
       <div class="cat-ear left"></div>
       <div class="cat-ear right"></div>
-      <div class="cat-eye left">•</div>
-      <div class="cat-eye right">•</div>
-      <div class="cat-nose">▾</div>
+      <div class="cat-eye left">🐾</div>
+      <div class="cat-eye right">🐾</div>
+      <div class="cat-nose">🔺</div>
       <div class="cat-mouth">ω</div>
-      <div class="cat-whisker w1"></div>
-      <div class="cat-whisker w2"></div>
-      <div class="cat-whisker w3"></div>
-      <div class="cat-whisker w4"></div>
+      <div class="cat-whisker l1"></div>
+      <div class="cat-whisker l2"></div>
+      <div class="cat-whisker r1"></div>
+      <div class="cat-whisker r2"></div>
     </div>
+    <div class="cat-meow">MEOWWW! 💕</div>
   </div>
 </div>
 
