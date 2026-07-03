@@ -243,9 +243,7 @@ function go(screenId) {
   const card = $('.intro-card');
 
   function check() {
-    // .replace(/\s+/g, '') strips out accidental spaces or mobile auto-correct spaces
-    const v = input.value.trim().replace(/\s+/g, '');
-    
+    const v = input.value.trim();
     if (v === '04022026') {
       FX.spawn(window.innerWidth/2, window.innerHeight/2, 'sparkle', 60);
       FX.spawn(window.innerWidth/2, window.innerHeight/2, 'heart', 40);
@@ -261,10 +259,10 @@ function go(screenId) {
     }
   }
 
-  // Ensure both click and touch events trigger smoothly on iPad/iPhone
-  btn.addEventListener('click', (e) => { e.preventDefault(); check(); });
+  btn.addEventListener('click', check);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
 })();
+
 /* ============ 8. GAME STAGE PROGRESS MAP ENGINE HUD ============ */
 function startDaysBadge() {
   const diff = Date.now() - ANIV_START.getTime();
